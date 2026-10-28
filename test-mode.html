@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Test Mode</title>
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Test%20Mode%22%2C%22short_name%22%3A%22Test%20Mode%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%237B5EA7%22%7D">
+<style>
+  :root {
+    --purple: #7B5EA7;
+    --purple-dark: #6B4E97;
+    --blue: #2D70E8;
+    --blue-light: #E8F0FE;
+    --blue-border: #4285F4;
+    --gray-bg: #F7F7F7;
+    --gray-border: #D4D4D4;
+    --gray-text: #666;
+    --dark-text: #333;
+    --white: #fff;
+    --key-bg: #E8E8E8;
+    --key-num: #F5F5F5;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--white);
+    overflow: hidden;
+    touch-action: manipulation;
+    -webkit-user-select: none; user-select: none;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; flex-direction: column; height: 100%; width: 100%; position: absolute; top: 0; left: 0; }
+  .screen.active { display: flex; }
+
+  /* ── HOME SCREEN ── */
+  #home { padding: calc(var(--safe-top) + 16px) 20px calc(var(--safe-bottom) + 16px); }
+  .home-header { text-align: center; margin-bottom: 4px; }
+  .logo-text { font-size: 32px; font-weight: 300; letter-spacing: 2px; color: #555; margin-bottom: 2px; }
+  .choose-assessment { color: var(--blue); font-size: 15px; text-decoration: underline; cursor: pointer; }
+  .help-icon {
+    position: absolute; top: calc(var(--safe-top) + 20px); right: 20px;
+    width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #999;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: #999; cursor: pointer;
+  }
+
+  .calc-section-label { font-size: 14px; color: var(--gray-text); margin: 20px 0 10px; }
+
+  .calc-card {
+    display: flex; align-items: center; padding: 16px 14px;
+    border: 1.5px solid var(--gray-border); border-radius: 8px;
+    margin-bottom: 10px; cursor: pointer; transition: all 0.15s;
+    background: var(--white);
+  }
+  .calc-card.selected { border-color: var(--blue-border); background: var(--blue-light); }
+  .calc-card-icon {
+    width: 44px; height: 44px; border: 1.5px solid #bbb; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: #555; margin-right: 12px; flex-shrink: 0;
+    background: var(--white); line-height: 1.1; text-align: center;
+  }
+  .calc-card-title { font-size: 16px; color: var(--dark-text); }
+  .calc-card-sub { font-size: 13px; color: var(--gray-text); margin-top: 1px; }
+
+  .home-bottom { margin-top: auto; }
+  .btn-start-test {
+    width: 100%; padding: 14px; font-size: 17px; border-radius: 8px;
+    border: 1.5px solid var(--blue); background: var(--white);
+    color: var(--blue); cursor: pointer; margin-bottom: 10px;
+  }
+  .btn-start-practice {
+    width: 100%; padding: 14px; font-size: 17px; border-radius: 8px;
+    border: none; background: var(--blue); color: var(--white); cursor: pointer;
+  }
+  .home-footer { display: flex; justify-content: center; gap: 16px; margin-top: 14px; }
+  .home-footer a { font-size: 13px; color: var(--blue); text-decoration: underline; cursor: pointer; }
+  .home-footer span { color: #ccc; }
+
+  /* ── CONFIRM MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    z-index: 100; align-items: center; justify-content: center; padding: 32px;
+  }
+  .modal-overlay.visible { display: flex; }
+  .modal-box {
+    background: #2C2C2E; border-radius: 14px; padding: 24px 20px 0;
+    max-width: 300px; width: 100%; text-align: center; color: var(--white);
+  }
+  .modal-box h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+  .modal-box p { font-size: 13px; line-height: 1.45; color: #ddd; margin-bottom: 20px; }
+  .modal-buttons { display: flex; border-top: 0.5px solid #555; }
+  .modal-btn {
+    flex: 1; padding: 14px 0; font-size: 17px; border: none;
+    background: none; cursor: pointer; color: #5AC8FA;
+  }
+  .modal-btn:first-child { border-right: 0.5px solid #555; font-weight: 400; }
+  .modal-btn:last-child { font-weight: 500; }
+
+  /* ── TOP BANNER (attempting to enter) ── */
+  .top-banner {
+    display: none; position: fixed; top: var(--safe-top); left: 0; right: 0;
+    background: var(--white); padding: 10px 16px; z-index: 90;
+    font-size: 14px; color: var(--dark-text); text-align: center;
+    border-bottom: 0.5px solid #ddd;
+  }
+  .top-banner.visible { display: block; }
+
+  /* ── CALCULATOR SCREEN ── */
+  #calculator { background: var(--white); }
+  .calc-topbar {
+    background: var(--purple); color: var(--white);
+    padding: calc(var(--safe-top) + 6px) 10px 6px;
+    display: flex; align-items: center; justify-content: space-between;
+    min-height: 44px;
+  }
+  .calc-topbar-title { font-size: 14px; font-weight: 400; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .calc-topbar-help {
+    width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.7);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: rgba(255,255,255,0.9); cursor: pointer; margin: 0 8px; flex-shrink: 0;
+  }
+  .calc-topbar-done {
+    padding: 5px 14px; border-radius: 5px; border: 1.5px solid rgba(255,255,255,0.8);
+    background: none; color: var(--white); font-size: 14px; font-weight: 500;
+    cursor: pointer; flex-shrink: 0;
+  }
+
+  /* ? Dropdown */
+  .help-dropdown {
+    display: none; position: absolute; top: calc(var(--safe-top) + 44px); right: 10px;
+    background: var(--white); border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    width: 260px; z-index: 80; padding: 16px; color: var(--dark-text);
+  }
+  .help-dropdown.visible { display: block; }
+  .help-dropdown .timer-label { font-size: 13px; color: var(--gray-text); text-align: center; }
+  .help-dropdown .timer-value { font-size: 28px; font-weight: 300; text-align: center; margin: 4px 0; color: var(--dark-text); }
+  .help-dropdown .timer-start { font-size: 12px; color: var(--gray-text); text-align: center; margin-bottom: 10px; }
+  .lock-badge {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: #555; color: var(--white); border-radius: 16px;
+    padding: 5px 14px; font-size: 13px; margin: 0 auto 14px; width: fit-content;
+  }
+  .lock-badge svg { width: 14px; height: 14px; fill: var(--white); }
+  .help-menu-item {
+    display: flex; align-items: center; gap: 8px; padding: 8px 0;
+    font-size: 14px; color: var(--dark-text); cursor: pointer;
+    border-top: 0.5px solid #eee;
+  }
+  .help-menu-item svg { width: 16px; height: 16px; fill: #888; }
+  .help-version { font-size: 12px; color: #aaa; text-align: center; margin-top: 8px; }
+
+  /* Display area */
+  .calc-display {
+    flex: 1; display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .calc-history {
+    flex: 1; padding: 0; font-size: 16px; color: var(--dark-text);
+    overflow-y: auto; display: flex; flex-direction: column;
+    justify-content: flex-end;
+  }
+  .calc-history-item {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 12px 16px;
+    border-top: 0.5px solid #e0e0e0;
+  }
+  .calc-history-expr { font-size: 17px; color: var(--dark-text); }
+  .calc-history-result { font-size: 17px; color: var(--dark-text); white-space: nowrap; margin-left: 16px; }
+  .calc-input-wrap {
+    border: 1.5px solid var(--blue-border); border-radius: 4px;
+    min-height: 48px; padding: 10px 14px; margin: 6px 8px;
+    display: flex; align-items: center; font-size: 18px; color: var(--dark-text);
+    background: var(--white); flex-shrink: 0;
+  }
+  .calc-cursor { display: inline-block; width: 1.5px; height: 22px; background: var(--dark-text); animation: blink 1s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Keypad */
+  .keypad-tabs {
+    display: flex; align-items: center; padding: 5px 6px 3px; gap: 2px;
+    border-top: 0.5px solid #ddd; background: #f2f2f2;
+  }
+  .keypad-tab { font-size: 14px; color: #888; padding: 4px 8px; cursor: pointer; border-bottom: 2.5px solid transparent; font-weight: 400; }
+  .keypad-tab.active { color: var(--dark-text); border-bottom-color: var(--blue); }
+  .keypad-toggle {
+    font-size: 12px; padding: 3px 8px; border: 1.5px solid #bbb; border-radius: 4px;
+    background: var(--white); color: var(--dark-text); cursor: pointer; margin-left: 2px;
+  }
+  .keypad-toggle.active { border-color: var(--blue-border); color: var(--blue); }
+  .keypad-action { font-size: 16px; color: #aaa; cursor: pointer; padding: 4px 3px; }
+  .keypad-spacer { flex: 1; }
+  .keypad-text-btn { font-size: 12px; color: #aaa; cursor: pointer; padding: 4px 4px; }
+  .keypad-wrench { font-size: 14px; color: #999; cursor: pointer; padding: 4px 2px; }
+
+  .keypad-grid {
+    display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px;
+    padding: 4px 5px calc(var(--safe-bottom) + 5px); background: #f2f2f2;
+  }
+  .key {
+    display: flex; align-items: center; justify-content: center;
+    height: 40px; border-radius: 6px; border: 0.5px solid #d0d0d0;
+    font-size: 15px; cursor: pointer; background: #e2e2e2;
+    color: var(--dark-text); -webkit-user-select: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  .key:active { background: #c8c8c8; }
+  .key.num { background: #f8f8f8; border-color: #d8d8d8; }
+  .key.num:active { background: #e0e0e0; }
+  .key.op { background: #e2e2e2; }
+  .key.dark { background: #c8c8c8; border-color: #b8b8b8; }
+  .key.dark:active { background: #aaa; }
+  .key.enter { background: var(--blue); color: var(--white); grid-column: span 2; border: none; font-size: 18px; }
+  .key.enter:active { background: #1a5fd0; }
+  .key.span2 { grid-column: span 2; }
+  .key .frac { display: flex; flex-direction: column; align-items: center; font-size: 11px; line-height: 1; }
+  .key .frac-line { width: 12px; height: 1px; background: var(--dark-text); margin: 1px 0; }
+  .key .small { font-size: 11px; }
+  .key .super { font-size: 10px; vertical-align: super; }
+
+  /* ── DONE SCREEN ── */
+  #done-screen {
+    padding: calc(var(--safe-top) + 16px) 24px calc(var(--safe-bottom) + 24px);
+    align-items: center; justify-content: center; background: var(--white);
+  }
+  .done-close {
+    position: absolute; top: calc(var(--safe-top) + 16px); right: 20px;
+    font-size: 24px; color: #ccc; cursor: pointer; background: none; border: none;
+  }
+  .done-content { text-align: center; width: 100%; max-width: 340px; }
+  .done-label { font-size: 18px; color: var(--gray-text); font-weight: 300; margin-bottom: 8px; }
+  .done-time { font-size: 48px; font-weight: 300; color: var(--dark-text); margin-bottom: 4px; }
+  .done-start { font-size: 14px; color: var(--gray-text); margin-bottom: 14px; }
+  .done-lock-badge {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    background: #555; color: var(--white); border-radius: 16px;
+    padding: 6px 16px; font-size: 14px; margin: 0 auto 40px; width: fit-content;
+  }
+  .done-lock-badge svg { width: 14px; height: 14px; fill: var(--white); }
+  .done-instructions { font-size: 14px; color: var(--gray-text); line-height: 1.5; margin-bottom: 6px; }
+  .done-instructions strong { font-weight: 600; }
+  .done-selflock-note { font-size: 14px; color: var(--gray-text); margin-bottom: 28px; }
+  .btn-im-done {
+    width: 100%; padding: 14px; font-size: 17px; border-radius: 8px;
+    border: 1.5px solid var(--blue); background: var(--white);
+    color: var(--blue); cursor: pointer; margin-bottom: 10px;
+  }
+  .btn-continue {
+    width: 100%; padding: 14px; font-size: 17px; border-radius: 8px;
+    border: none; background: var(--blue); color: var(--white); cursor: pointer;
+  }
+
+  /* ── LEAVE WARNING ── */
+  .leave-warning {
+    display: none; position: fixed; top: calc(var(--safe-top) + 50px); left: 50%; transform: translateX(-50%);
+    background: #FF3B30; color: white; padding: 10px 20px; border-radius: 10px;
+    font-size: 14px; font-weight: 500; z-index: 200; text-align: center;
+    box-shadow: 0 4px 16px rgba(255,59,48,0.3); max-width: 90%;
+  }
+  .leave-warning.visible { display: block; }
+
+  /* ── PASSWORD MODAL ── */
+  .password-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    z-index: 150; align-items: center; justify-content: center; padding: 32px;
+  }
+  .password-overlay.visible { display: flex; }
+  .password-box {
+    background: #2C2C2E; border-radius: 14px; padding: 24px 20px 0;
+    max-width: 300px; width: 100%; text-align: center; color: var(--white);
+  }
+  .password-box h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+  .password-box p { font-size: 13px; color: #ddd; margin-bottom: 16px; }
+  .password-input {
+    width: 100%; padding: 10px; border-radius: 8px; border: none;
+    background: #1C1C1E; color: var(--white); font-size: 18px;
+    text-align: center; letter-spacing: 4px; outline: none;
+    -webkit-text-security: disc;
+  }
+  .password-error { font-size: 12px; color: #FF453A; margin-top: 8px; min-height: 18px; }
+  .password-buttons { display: flex; border-top: 0.5px solid #555; margin-top: 16px; }
+  .password-btn {
+    flex: 1; padding: 14px 0; font-size: 17px; border: none;
+    background: none; cursor: pointer; color: #5AC8FA;
+  }
+  .password-btn:first-child { border-right: 0.5px solid #555; }
+  .password-btn:last-child { font-weight: 500; }
+</style>
+</head>
+<body>
+
+<!-- ══════ HOME SCREEN ══════ -->
+<div id="home" class="screen active">
+  <div class="help-icon" onclick="alert('Test Mode Calculator')">?</div>
+  <div class="home-header">
+    <div class="logo-text">test mode</div>
+    <div class="choose-assessment">Choose Assessment</div>
+  </div>
+  <div class="calc-section-label">Choose a Calculator</div>
+
+  <div class="calc-card" data-calc="four" onclick="selectCalc(this)">
+    <div class="calc-card-icon">+ −<br>÷ ×</div>
+    <div>
+      <div class="calc-card-title">Four Function Calculator</div>
+      <div class="calc-card-sub">Practice Version</div>
+    </div>
+  </div>
+  <div class="calc-card selected" data-calc="scientific" onclick="selectCalc(this)">
+    <div class="calc-card-icon"><span style="font-size:11px">∛27</span></div>
+    <div>
+      <div class="calc-card-title">Scientific Calculator</div>
+      <div class="calc-card-sub">Practice Version</div>
+    </div>
+  </div>
+  <div class="calc-card" data-calc="graphing" onclick="selectCalc(this)">
+    <div class="calc-card-icon" style="font-size:18px">∿</div>
+    <div>
+      <div class="calc-card-title">Graphing Calculator</div>
+      <div class="calc-card-sub">Practice Version</div>
+    </div>
+  </div>
+
+  <div class="home-bottom">
+    <button class="btn-start-test" onclick="startTest()">Start Test</button>
+    <button class="btn-start-practice" onclick="startPractice()">Start Practice</button>
+    <div class="home-footer">
+      <a>Terms of Service</a><span>|</span><a>Privacy Policy</a><span>|</span><a>Help</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ CONFIRM MODAL ══════ -->
+<div id="confirm-modal" class="modal-overlay">
+  <div class="modal-box">
+    <h3>Confirm App Self-Lock</h3>
+    <p>Test Mode wants to start Assessment Mode. You will be unable to use other apps on iPhone until Test Mode ends Assessment Mode. Do you want to allow this?</p>
+    <div class="modal-buttons">
+      <button class="modal-btn" onclick="cancelTest()">No</button>
+      <button class="modal-btn" onclick="confirmTest()">Yes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ TOP BANNER ══════ -->
+<div id="top-banner" class="top-banner">Attempting to enter Single-App Mode..</div>
+
+<!-- ══════ CALCULATOR SCREEN ══════ -->
+<div id="calculator" class="screen">
+  <div class="calc-topbar">
+    <div class="calc-topbar-title" id="calc-title">Scientific Calculator | Practice Ver…</div>
+    <div class="calc-topbar-help" onclick="toggleHelp()">?</div>
+    <button class="calc-topbar-done" onclick="showDone()">Done</button>
+  </div>
+
+  <!-- ? Dropdown -->
+  <div id="help-dropdown" class="help-dropdown">
+    <div class="timer-label">You've been using the<br>calculator for</div>
+    <div class="timer-value" id="dropdown-timer">0 minutes</div>
+    <div class="timer-start" id="dropdown-start">Start time: --</div>
+    <div class="lock-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 1C8.7 1 6 3.7 6 7v2H4v14h16V9h-2V7c0-3.3-2.7-6-6-6zm-4 8V7c0-2.2 1.8-4 4-4s4 1.8 4 4v2H8zm4 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      App Self-Lock
+    </div>
+    <div class="help-menu-item" onclick="toggleHelp()">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm4 5h12v2H8zm-4 5h16v2H4z"/></svg>
+      Keyboard Shortcuts
+    </div>
+    <div class="help-menu-item" onclick="showPasswordPrompt()">
+      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+      Help Exiting the App
+    </div>
+    <div class="help-version">Version: 7.57.0</div>
+  </div>
+
+  <div class="calc-display">
+    <div class="calc-history" id="calc-history"></div>
+    <div class="calc-input-wrap" id="calc-input"><span class="calc-cursor"></span></div>
+  </div>
+
+  <!-- Keypad -->
+  <div class="keypad-tabs">
+    <div class="keypad-tab active" data-tab="main">main</div>
+    <div class="keypad-tab" data-tab="abc">abc</div>
+    <div class="keypad-tab" data-tab="func">func</div>
+    <div style="width:8px"></div>
+    <div class="keypad-toggle" id="rad-btn" onclick="toggleAngle('RAD')">RAD</div>
+    <div class="keypad-toggle active" id="deg-btn" onclick="toggleAngle('DEG')">DEG</div>
+    <div class="keypad-spacer"></div>
+    <div class="keypad-action" onclick="calcUndo()" title="Undo">↩</div>
+    <div class="keypad-action" onclick="calcRedo()" title="Redo">↪</div>
+    <div class="keypad-text-btn" onclick="calcClearAll()">clear all</div>
+    <div class="keypad-wrench">🔧</div>
+  </div>
+  <div class="keypad-grid" id="keypad-main">
+    <!-- Row 1 -->
+    <div class="key" onclick="ki('²')">a<span class="super">2</span></div>
+    <div class="key" onclick="ki('^(')">a<span class="super">b</span></div>
+    <div class="key" onclick="ki('abs(')">|a|</div>
+    <div class="key num" onclick="ki('7')">7</div>
+    <div class="key num" onclick="ki('8')">8</div>
+    <div class="key num" onclick="ki('9')">9</div>
+    <div class="key op" onclick="ki('÷')">÷</div>
+    <div class="key" onclick="ki('%')">%</div>
+    <div class="key" onclick="ki('/')"><span class="frac"><span>a</span><span class="frac-line"></span><span>b</span></span></div>
+
+    <!-- Row 2 -->
+    <div class="key" onclick="ki('√(')">√</div>
+    <div class="key" onclick="ki('nrt(')"><span class="small"><sup>n</sup>√</span></div>
+    <div class="key" onclick="ki('π')">π</div>
+    <div class="key num" onclick="ki('4')">4</div>
+    <div class="key num" onclick="ki('5')">5</div>
+    <div class="key num" onclick="ki('6')">6</div>
+    <div class="key op" onclick="ki('×')">×</div>
+    <div class="key dark" onclick="moveCursor(-1)">←</div>
+    <div class="key dark" onclick="moveCursor(1)">→</div>
+
+    <!-- Row 3 -->
+    <div class="key" onclick="ki('sin(')">sin</div>
+    <div class="key" onclick="ki('cos(')">cos</div>
+    <div class="key" onclick="ki('tan(')">tan</div>
+    <div class="key num" onclick="ki('1')">1</div>
+    <div class="key num" onclick="ki('2')">2</div>
+    <div class="key num" onclick="ki('3')">3</div>
+    <div class="key op" onclick="ki('−')">−</div>
+    <div class="key span2" onclick="calcBackspace()">⌫</div>
+
+    <!-- Row 4 -->
+    <div class="key" onclick="ki('(')">(</div>
+    <div class="key" onclick="ki(')')">)</div>
+    <div class="key" onclick="ki(',')">,</div>
+    <div class="key num" onclick="ki('0')">0</div>
+    <div class="key num" onclick="ki('.')">.</div>
+    <div class="key" onclick="ki('ans')">ans</div>
+    <div class="key op" onclick="ki('+')">+</div>
+    <div class="key enter" onclick="calcEval()">↵</div>
+  </div>
+</div>
+
+<!-- ══════ DONE SCREEN ══════ -->
+<div id="done-screen" class="screen">
+  <button class="done-close" onclick="closeDone()">×</button>
+  <div class="done-content">
+    <div class="done-label">You've been using the calculator for</div>
+    <div class="done-time" id="done-timer">0 minutes</div>
+    <div class="done-start" id="done-start">Start time: --</div>
+    <div class="done-lock-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 1C8.7 1 6 3.7 6 7v2H4v14h16V9h-2V7c0-3.3-2.7-6-6-6zm-4 8V7c0-2.2 1.8-4 4-4s4 1.8 4 4v2H8zm4 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      App Self-Lock
+    </div>
+    <div id="leave-log" style="display:none; margin-bottom: 20px;">
+      <div style="font-size:13px; color:#FF3B30; font-weight:500; margin-bottom:6px;">⚠ App exits detected:</div>
+      <div id="leave-log-list" style="font-size:12px; color:#888; line-height:1.6;"></div>
+    </div>
+    <div class="done-instructions">If you're done, show this screen to your teacher.<br>Press <strong>"Continue Session"</strong> to return to the calculator.</div>
+    <div class="done-selflock-note">App Self-Lock will end when you are done.</div>
+    <button class="btn-im-done" onclick="endSession()">I'm Done</button>
+    <button class="btn-continue" onclick="continueSess()">Continue Session</button>
+  </div>
+</div>
+
+<!-- ══════ PASSWORD MODAL ══════ -->
+<div id="password-modal" class="password-overlay">
+  <div class="password-box">
+    <h3>Enter Password</h3>
+    <p>A password is required to exit the app during a test session.</p>
+    <input type="tel" class="password-input" id="password-input" maxlength="8" autocomplete="off" inputmode="numeric">
+    <div class="password-error" id="password-error"></div>
+    <div class="password-buttons">
+      <button class="password-btn" onclick="closePassword()">Cancel</button>
+      <button class="password-btn" onclick="checkPassword()">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ LEAVE WARNING ══════ -->
+<div id="leave-warning" class="leave-warning">⚠ You left the app. This has been recorded.</div>
+
+<script>
+  // ── STATE ──
+  let selectedCalc = 'scientific';
+  let testActive = false;
+  let startTime = null;
+  let timerInterval = null;
+  let angleMode = 'DEG';
+  let expression = '';
+  let cursorPos = 0;
+  let lastAns = 0;
+  let history = [];
+  let undoStack = [];
+  let redoStack = [];
+  let leaveEvents = [];
+  let leaveStart = null;
+
+  // ── NAVIGATION ──
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function selectCalc(el) {
+    document.querySelectorAll('.calc-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedCalc = el.dataset.calc;
+  }
+
+  // ── TEST START FLOW ──
+  function startTest() {
+    document.getElementById('confirm-modal').classList.add('visible');
+  }
+  function startPractice() {
+    launchCalc(false);
+  }
+  function cancelTest() {
+    document.getElementById('confirm-modal').classList.remove('visible');
+  }
+  function confirmTest() {
+    document.getElementById('confirm-modal').classList.remove('visible');
+    // Show "Attempting to enter Single-App Mode.." banner
+    const banner = document.getElementById('top-banner');
+    banner.classList.add('visible');
+    setTimeout(() => {
+      banner.classList.remove('visible');
+      launchCalc(true);
+    }, 1500);
+  }
+
+  function launchCalc(isTest) {
+    testActive = isTest;
+    startTime = new Date();
+    expression = '';
+    cursorPos = 0;
+    history = [];
+    leaveEvents = [];
+    updateDisplay();
+    document.getElementById('calc-history').innerHTML = '';
+
+    // Set title based on selected calculator
+    const names = { four: 'Four Function', scientific: 'Scientific', graphing: 'Graphing' };
+    const label = isTest ? 'Test Mode' : 'Practice Ver…';
+    document.getElementById('calc-title').textContent = `${names[selectedCalc]} Calculator | ${label}`;
+
+    showScreen('calculator');
+    startTimer();
+  }
+
+  // ── TIMER ──
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(updateTimerDisplays, 5000);
+    updateTimerDisplays();
+  }
+
+  function getElapsed() {
+    if (!startTime) return 0;
+    return Math.floor((Date.now() - startTime.getTime()) / 60000);
+  }
+
+  function formatStartTime(d) {
+    return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+  }
+
+  function updateTimerDisplays() {
+    const mins = getElapsed();
+    const label = mins === 1 ? '1 minute' : `${mins} minutes`;
+    const start = startTime ? `Start time: ${formatStartTime(startTime)}` : 'Start time: --';
+
+    const dt = document.getElementById('dropdown-timer');
+    const ds = document.getElementById('dropdown-start');
+    const donet = document.getElementById('done-timer');
+    const dones = document.getElementById('done-start');
+
+    if (dt) dt.textContent = label;
+    if (ds) ds.textContent = start;
+    if (donet) donet.textContent = label;
+    if (dones) dones.textContent = start;
+  }
+
+  // ── HELP DROPDOWN ──
+  function toggleHelp() {
+    const dd = document.getElementById('help-dropdown');
+    dd.classList.toggle('visible');
+    if (dd.classList.contains('visible')) updateTimerDisplays();
+  }
+
+  // ── DONE SCREEN ──
+  function showDone() {
+    document.getElementById('help-dropdown').classList.remove('visible');
+    updateTimerDisplays();
+    // Show leave log if any
+    if (leaveEvents.length > 0) {
+      document.getElementById('leave-log').style.display = 'block';
+      document.getElementById('leave-log-list').innerHTML = leaveEvents.map(e =>
+        `Left at ${e.time} for ${e.duration}s`
+      ).join('<br>');
+    } else {
+      document.getElementById('leave-log').style.display = 'none';
+    }
+    showScreen('done-screen');
+  }
+
+  function closeDone() {
+    showScreen('calculator');
+  }
+
+  function continueSess() {
+    showScreen('calculator');
+  }
+
+  function endSession() {
+    testActive = false;
+    if (timerInterval) clearInterval(timerInterval);
+    showScreen('home');
+  }
+
+  // ── PASSWORD ──
+  function showPasswordPrompt() {
+    document.getElementById('help-dropdown').classList.remove('visible');
+    document.getElementById('password-modal').classList.add('visible');
+    document.getElementById('password-input').value = '';
+    document.getElementById('password-error').textContent = '';
+    setTimeout(() => document.getElementById('password-input').focus(), 100);
+  }
+
+  function closePassword() {
+    document.getElementById('password-modal').classList.remove('visible');
+  }
+
+  function checkPassword() {
+    const val = document.getElementById('password-input').value;
+    if (val === '1984') {
+      document.getElementById('password-modal').classList.remove('visible');
+      testActive = false;
+      if (timerInterval) clearInterval(timerInterval);
+      showScreen('home');
+    } else {
+      document.getElementById('password-error').textContent = 'Incorrect password';
+      document.getElementById('password-input').value = '';
+    }
+  }
+
+  document.getElementById('password-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPassword();
+  });
+
+  // ── LEAVE DETECTION ──
+  document.addEventListener('visibilitychange', () => {
+    if (!testActive) return;
+    if (document.hidden) {
+      leaveStart = Date.now();
+    } else {
+      if (leaveStart) {
+        const dur = Math.round((Date.now() - leaveStart) / 1000);
+        const now = new Date();
+        leaveEvents.push({
+          time: now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true }),
+          duration: dur
+        });
+        leaveStart = null;
+        // Show warning
+        const w = document.getElementById('leave-warning');
+        w.classList.add('visible');
+        setTimeout(() => w.classList.remove('visible'), 3000);
+      }
+    }
+  });
+
+  // ── CALCULATOR ENGINE ──
+  function ki(ch) {
+    // Save undo state
+    undoStack.push({ expr: expression, pos: cursorPos });
+    redoStack = [];
+
+    if (ch === '²') {
+      expression = expression.slice(0, cursorPos) + '^2' + expression.slice(cursorPos);
+      cursorPos += 2;
+    } else {
+      expression = expression.slice(0, cursorPos) + ch + expression.slice(cursorPos);
+      cursorPos += ch.length;
+    }
+    updateDisplay();
+  }
+
+  function calcBackspace() {
+    if (cursorPos > 0) {
+      undoStack.push({ expr: expression, pos: cursorPos });
+      redoStack = [];
+      expression = expression.slice(0, cursorPos - 1) + expression.slice(cursorPos);
+      cursorPos--;
+      updateDisplay();
+    }
+  }
+
+  function calcClearAll() {
+    undoStack.push({ expr: expression, pos: cursorPos });
+    redoStack = [];
+    expression = '';
+    cursorPos = 0;
+    updateDisplay();
+  }
+
+  function calcUndo() {
+    if (undoStack.length > 0) {
+      redoStack.push({ expr: expression, pos: cursorPos });
+      const state = undoStack.pop();
+      expression = state.expr;
+      cursorPos = state.pos;
+      updateDisplay();
+    }
+  }
+
+  function calcRedo() {
+    if (redoStack.length > 0) {
+      undoStack.push({ expr: expression, pos: cursorPos });
+      const state = redoStack.pop();
+      expression = state.expr;
+      cursorPos = state.pos;
+      updateDisplay();
+    }
+  }
+
+  function moveCursor(dir) {
+    cursorPos = Math.max(0, Math.min(expression.length, cursorPos + dir));
+    updateDisplay();
+  }
+
+  function updateDisplay() {
+    const inp = document.getElementById('calc-input');
+    const before = expression.slice(0, cursorPos);
+    const after = expression.slice(cursorPos);
+    inp.innerHTML = escHtml(before) + '<span class="calc-cursor"></span>' + escHtml(after);
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function calcEval() {
+    if (!expression.trim()) return;
+    try {
+      let expr = expression;
+      // Replace display chars with JS math
+      expr = expr.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-');
+      expr = expr.replace(/π/g, `(${Math.PI})`);
+      expr = expr.replace(/ans/g, `(${lastAns})`);
+      // Handle ^
+      expr = expr.replace(/\^/g, '**');
+      // Handle √(
+      expr = expr.replace(/√\(/g, 'Math.sqrt(');
+      // Handle abs(
+      expr = expr.replace(/abs\(/g, 'Math.abs(');
+      // Handle sin, cos, tan
+      const toRad = angleMode === 'DEG' ? `*${Math.PI}/180` : '';
+      expr = expr.replace(/sin\(/g, `Math.sin((`);
+      expr = expr.replace(/cos\(/g, `Math.cos((`);
+      expr = expr.replace(/tan\(/g, `Math.tan((`);
+      if (toRad) {
+        // Close the inner parens with radian conversion
+        // This is a simple approach - wrap trig arg
+        expr = expr.replace(/Math\.(sin|cos|tan)\(\(/g, (m, fn) => `Math.${fn}((`);
+        // We need to handle the closing - simple approach for single-level
+        expr = expr.replace(/Math\.(sin|cos|tan)\(\(([^)]*)\)\)/g, (m, fn, arg) => {
+          return `Math.${fn}((${arg})${toRad})`;
+        });
+      }
+      // Handle nrt( as a,b) → Math.pow(b, 1/a)
+      expr = expr.replace(/nrt\(([^,]+),([^)]+)\)/g, 'Math.pow($2, 1/($1))');
+      // Handle %
+      expr = expr.replace(/(\d+(\.\d+)?)%/g, '($1/100)');
+
+      const result = Function('"use strict"; return (' + expr + ')')();
+      const displayResult = Number.isFinite(result) ? parseFloat(result.toPrecision(12)) : 'Error';
+
+      lastAns = Number.isFinite(result) ? result : 0;
+
+      // Add to history
+      const histEl = document.getElementById('calc-history');
+      const item = document.createElement('div');
+      item.className = 'calc-history-item';
+      item.innerHTML = `<div class="calc-history-expr">${escHtml(expression)}</div><div class="calc-history-result">= ${displayResult}</div>`;
+      histEl.appendChild(item);
+      histEl.scrollTop = histEl.scrollHeight;
+
+      expression = '';
+      cursorPos = 0;
+      updateDisplay();
+    } catch (e) {
+      // Show error in history
+      const histEl = document.getElementById('calc-history');
+      const item = document.createElement('div');
+      item.className = 'calc-history-item';
+      item.innerHTML = `<div class="calc-history-expr">${escHtml(expression)}</div><div class="calc-history-result" style="color:#FF3B30">= Error</div>`;
+      histEl.appendChild(item);
+      histEl.scrollTop = histEl.scrollHeight;
+
+      expression = '';
+      cursorPos = 0;
+      updateDisplay();
+    }
+  }
+
+  function toggleAngle(mode) {
+    angleMode = mode;
+    document.getElementById('rad-btn').classList.toggle('active', mode === 'RAD');
+    document.getElementById('deg-btn').classList.toggle('active', mode === 'DEG');
+  }
+
+  // ── KEYPAD TABS ──
+  document.querySelectorAll('.keypad-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.keypad-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      // For now all tabs show main keypad
+    });
+  });
+
+  // ── CLICK OUTSIDE TO CLOSE DROPDOWN ──
+  document.addEventListener('click', e => {
+    const dd = document.getElementById('help-dropdown');
+    const helpBtn = document.querySelector('.calc-topbar-help');
+    if (dd.classList.contains('visible') && !dd.contains(e.target) && !helpBtn.contains(e.target)) {
+      dd.classList.remove('visible');
+    }
+  });
+
+  // ── PREVENT PULL-TO-REFRESH ──
+  document.body.addEventListener('touchmove', e => {
+    if (e.target.closest('.calc-history')) return;
+    // Allow scrolling in history
+  }, { passive: true });
+
+  // Init display
+  updateDisplay();
+</script>
+</body>
+</html>
