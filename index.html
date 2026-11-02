@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,18 +12,30 @@
   :root {
     --purple: #7B5EA7;
     --purple-dark: #6B4E97;
-    --blue: #2D70E8;
-    --blue-light: #E8F0FE;
-    --blue-border: #4285F4;
+    --charcoal: #333333;
+    --blue: #2f72dc;
+    --blue-light: #e8f0fe;
+    --blue-border: #2f72dc;
     --gray-bg: #F7F7F7;
-    --gray-border: #D4D4D4;
+    --gray-border: #d0d0d0;
     --gray-text: #666;
     --dark-text: #333;
     --white: #fff;
-    --key-bg: #E8E8E8;
-    --key-num: #F5F5F5;
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
+    /* Mode-dependent vars (default = practice) */
+    --header-bg: #333333;
+    --help-btn-bg: #888;
+    --help-btn-border: transparent;
+    --help-btn-color: #fff;
+    --keypad-bg: #ededed;
+    --key-func: #ffffff;
+    --key-num: #cdcdcd;
+    --key-op: #ffffff;
+    --key-dark: #cdcdcd;
+    --key-border: #d8d8d8;
+    --undo-bg: transparent;
+    --undo-color: #bbb;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -40,9 +53,10 @@
   .screen.active { display: flex; }
 
   /* ── HOME SCREEN ── */
-  #home { padding: calc(var(--safe-top) + 16px) 20px calc(var(--safe-bottom) + 16px); }
+  #home { padding: calc(var(--safe-top) + 24px) 20px calc(var(--safe-bottom) + 16px); overflow: visible; }
   .home-header { text-align: center; margin-bottom: 4px; }
-  .logo-text { font-size: 32px; font-weight: 300; letter-spacing: 2px; color: #555; margin-bottom: 2px; }
+  .logo-text { margin-bottom: 2px; }
+  .logo-text img { height: 22px; width: auto; display: block; margin: 0 auto; }
   .choose-assessment { color: var(--blue); font-size: 15px; text-decoration: underline; cursor: pointer; }
   .help-icon {
     position: absolute; top: calc(var(--safe-top) + 20px); right: 20px;
@@ -51,37 +65,47 @@
     font-size: 16px; color: #999; cursor: pointer;
   }
 
-  .calc-section-label { font-size: 14px; color: var(--gray-text); margin: 20px 0 10px; }
+  .calc-section-label { font-size: 14px; color: var(--dark-text); margin: 20px 0 10px; }
 
+  /* Card styling matching iOS */
   .calc-card {
-    display: flex; align-items: center; padding: 16px 14px;
-    border: 1.5px solid var(--gray-border); border-radius: 8px;
+    display: flex; align-items: center; padding: 14px 12px;
+    border: 1px solid #e0e0e0; border-radius: 8px;
     margin-bottom: 10px; cursor: pointer; transition: all 0.15s;
     background: var(--white);
   }
-  .calc-card.selected { border-color: var(--blue-border); background: var(--blue-light); }
-  .calc-card-icon {
-    width: 44px; height: 44px; border: 1.5px solid #bbb; border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; color: #555; margin-right: 12px; flex-shrink: 0;
-    background: var(--white); line-height: 1.1; text-align: center;
+  .calc-card.selected {
+    border: 2px solid var(--blue);
+    background: #f4f8fd;
   }
+  .calc-card.selected .calc-card-title,
+  .calc-card.selected .calc-card-sub { color: #2d5ca6; }
+
+  .calc-card-icon {
+    width: 48px; height: 48px; border: none; border-radius: 0;
+    display: flex; align-items: center; justify-content: center;
+    margin-right: 12px; flex-shrink: 0;
+    background: transparent; overflow: visible;
+  }
+  .calc-card-icon svg { width: 30px; height: 30px; }
+  .calc-card-icon img { width: 100%; height: 100%; object-fit: contain; }
+
   .calc-card-title { font-size: 16px; color: var(--dark-text); }
-  .calc-card-sub { font-size: 13px; color: var(--gray-text); margin-top: 1px; }
+  .calc-card-sub { font-size: 13px; color: #8e8e8e; margin-top: 1px; }
 
   .home-bottom { margin-top: auto; }
   .btn-start-test {
     width: 100%; padding: 14px; font-size: 17px; border-radius: 8px;
-    border: 1.5px solid var(--blue); background: var(--white);
+    border: 2px solid var(--blue); background: var(--white);
     color: var(--blue); cursor: pointer; margin-bottom: 10px;
   }
   .btn-start-practice {
     width: 100%; padding: 14px; font-size: 17px; border-radius: 8px;
-    border: none; background: var(--blue); color: var(--white); cursor: pointer;
+    border: 2px solid var(--blue); background: var(--blue); color: var(--white); cursor: pointer;
   }
   .home-footer { display: flex; justify-content: center; gap: 16px; margin-top: 14px; }
-  .home-footer a { font-size: 13px; color: var(--blue); text-decoration: underline; cursor: pointer; }
-  .home-footer span { color: #ccc; }
+  .home-footer a { font-size: 13px; color: var(--gray-text); text-decoration: underline; cursor: pointer; }
+  .home-footer span { color: #d9d9d9; }
 
   /* ── CONFIRM MODAL ── */
   .modal-overlay {
@@ -115,17 +139,23 @@
   /* ── CALCULATOR SCREEN ── */
   #calculator { background: var(--white); }
   .calc-topbar {
-    background: var(--purple); color: var(--white);
+    background: var(--header-bg); color: var(--white);
     padding: calc(var(--safe-top) + 6px) 10px 6px;
     display: flex; align-items: center; justify-content: space-between;
     min-height: 44px;
   }
   .calc-topbar-title { font-size: 14px; font-weight: 400; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ? help button - changes per mode */
   .calc-topbar-help {
-    width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.7);
+    width: 26px; height: 26px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 14px; color: rgba(255,255,255,0.9); cursor: pointer; margin: 0 8px; flex-shrink: 0;
+    font-size: 14px; cursor: pointer; margin: 0 8px; flex-shrink: 0;
+    background: var(--help-btn-bg);
+    border: 1.5px solid var(--help-btn-border);
+    color: var(--help-btn-color);
   }
+
   .calc-topbar-done {
     padding: 5px 14px; border-radius: 5px; border: 1.5px solid rgba(255,255,255,0.8);
     background: none; color: var(--white); font-size: 14px; font-weight: 500;
@@ -174,7 +204,7 @@
   .calc-history-expr { font-size: 17px; color: var(--dark-text); }
   .calc-history-result { font-size: 17px; color: var(--dark-text); white-space: nowrap; margin-left: 16px; }
   .calc-input-wrap {
-    border: 1.5px solid var(--blue-border); border-radius: 4px;
+    border: 1.5px solid var(--blue); border-radius: 4px;
     min-height: 48px; padding: 10px 14px; margin: 6px 8px;
     display: flex; align-items: center; font-size: 18px; color: var(--dark-text);
     background: var(--white); flex-shrink: 0;
@@ -182,47 +212,67 @@
   .calc-cursor { display: inline-block; width: 1.5px; height: 22px; background: var(--dark-text); animation: blink 1s step-end infinite; }
   @keyframes blink { 50% { opacity: 0; } }
 
-  /* Keypad */
+  /* Keypad tabs bar */
   .keypad-tabs {
     display: flex; align-items: center; padding: 5px 6px 3px; gap: 2px;
-    border-top: 0.5px solid #ddd; background: #f2f2f2;
+    border-top: 0.5px solid #ddd; background: var(--keypad-bg);
   }
   .keypad-tab { font-size: 14px; color: #888; padding: 4px 8px; cursor: pointer; border-bottom: 2.5px solid transparent; font-weight: 400; }
   .keypad-tab.active { color: var(--dark-text); border-bottom-color: var(--blue); }
   .keypad-toggle {
-    font-size: 12px; padding: 3px 8px; border: 1.5px solid #bbb; border-radius: 4px;
+    font-size: 13px; padding: 3px 10px; border: 1.5px solid #bbb; border-radius: 4px;
     background: var(--white); color: var(--dark-text); cursor: pointer; margin-left: 2px;
   }
-  .keypad-toggle.active { border-color: var(--blue-border); color: var(--blue); }
-  .keypad-action { font-size: 16px; color: #aaa; cursor: pointer; padding: 4px 3px; }
-  .keypad-spacer { flex: 1; }
-  .keypad-text-btn { font-size: 12px; color: #aaa; cursor: pointer; padding: 4px 4px; }
-  .keypad-wrench { font-size: 14px; color: #999; cursor: pointer; padding: 4px 2px; }
+  .keypad-toggle.active { border-color: var(--blue); color: var(--blue); background: var(--white); }
 
-  .keypad-grid {
-    display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px;
-    padding: 4px 5px calc(var(--safe-bottom) + 5px); background: #f2f2f2;
+  /* Undo/redo buttons */
+  .keypad-action {
+    display: flex; align-items: center; justify-content: center;
+    width: 28px; height: 24px; cursor: pointer; padding: 0;
+    border-radius: 4px; border: none; background: var(--undo-bg);
   }
+  .keypad-action svg { width: 18px; height: 18px; }
+
+  .keypad-spacer { flex: 1; }
+  .keypad-text-btn { font-size: 12px; color: #aaa; cursor: pointer; padding: 4px 4px; white-space: nowrap; }
+  .keypad-wrench { display: flex; align-items: center; justify-content: center; padding: 4px 2px; cursor: pointer; }
+  .keypad-wrench svg { width: 18px; height: 18px; fill: #777; }
+
+  /* Keypad grid */
+  .keypad-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) 14px repeat(3, 1fr) 1fr 14px repeat(2, 1fr);
+    gap: 4px;
+    padding: 4px 5px calc(var(--safe-bottom) + 5px); background: var(--keypad-bg);
+  }
+  .key-gap { pointer-events: none; }
   .key {
     display: flex; align-items: center; justify-content: center;
-    height: 40px; border-radius: 6px; border: 0.5px solid #d0d0d0;
-    font-size: 15px; cursor: pointer; background: #e2e2e2;
-    color: var(--dark-text); -webkit-user-select: none;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    height: 44px; border-radius: 5px; border: 0.5px solid var(--key-border);
+    font-size: 17px; cursor: pointer; background: var(--key-func);
+    color: #000; -webkit-user-select: none;
+    font-family: 'Symbola', 'Times New Roman', Times, serif;
+    font-weight: 400;
   }
-  .key:active { background: #c8c8c8; }
-  .key.num { background: #f8f8f8; border-color: #d8d8d8; }
-  .key.num:active { background: #e0e0e0; }
-  .key.op { background: #e2e2e2; }
-  .key.dark { background: #c8c8c8; border-color: #b8b8b8; }
-  .key.dark:active { background: #aaa; }
+  .key.num, .key.op, .key.dark, .key.enter {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  }
+  .key .var {
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic;
+  }
+  .key:active { filter: brightness(0.9); }
+  .key.num { background: var(--key-num); border-color: #bbbbbb; }
+  .key.op { background: var(--key-func); }
+  .key.dark { background: var(--key-dark); border-color: #bbbbbb; }
+  .key.dark:active { filter: brightness(0.85); }
   .key.enter { background: var(--blue); color: var(--white); grid-column: span 2; border: none; font-size: 18px; }
-  .key.enter:active { background: #1a5fd0; }
+  .key.enter:active { filter: brightness(0.85); }
   .key.span2 { grid-column: span 2; }
-  .key .frac { display: flex; flex-direction: column; align-items: center; font-size: 11px; line-height: 1; }
-  .key .frac-line { width: 12px; height: 1px; background: var(--dark-text); margin: 1px 0; }
-  .key .small { font-size: 11px; }
-  .key .super { font-size: 10px; vertical-align: super; }
+  .key .frac { display: flex; flex-direction: column; align-items: center; font-size: 13px; line-height: 1; }
+  .key .frac-line { width: 14px; height: 1px; background: var(--dark-text); margin: 1px 0; }
+  .key .small { font-size: 12px; }
+  .key .super { font-size: 11px; vertical-align: super; }
 
   /* ── DONE SCREEN ── */
   #done-screen {
@@ -256,7 +306,6 @@
     border: none; background: var(--blue); color: var(--white); cursor: pointer;
   }
 
-
   /* ── PASSWORD MODAL ── */
   .password-overlay {
     display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
@@ -283,6 +332,16 @@
   }
   .password-btn:first-child { border-right: 0.5px solid #555; }
   .password-btn:last-child { font-weight: 500; }
+
+  /* ── MODE: TEST overrides ── */
+  body.test-mode {
+    --header-bg: #7B5EA7;
+    --help-btn-bg: transparent;
+    --help-btn-border: rgba(255,255,255,0.7);
+    --help-btn-color: rgba(255,255,255,0.9);
+    --undo-bg: var(--blue);
+    --undo-color: #fff;
+  }
 </style>
 </head>
 <body>
@@ -291,27 +350,33 @@
 <div id="home" class="screen active">
   <div class="help-icon" onclick="alert('Test Mode Calculator')">?</div>
   <div class="home-header">
-    <div class="logo-text">test mode</div>
+    <div class="logo-text"><img src="data:image/png;base64,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" alt="desmos"></div>
     <div class="choose-assessment">Choose Assessment</div>
   </div>
   <div class="calc-section-label">Choose a Calculator</div>
 
   <div class="calc-card" data-calc="four" onclick="selectCalc(this)">
-    <div class="calc-card-icon">+ −<br>÷ ×</div>
+    <div class="calc-card-icon">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHIAAAByCAYAAACP3YV9AAAKdklEQVR42u2da0hTbxzHv5vzUtpfM8npvBS0cpWpLcNoaRcJB5YENaErSRKGXUBIetWL6EWEQr21jBBFLehCsS6WFV4q27IGTVov7DKXptOZ5ja1/V952NxFZ7sc9feFwTmP2znb8/G5nt+FY7FYLCDNenGpCggkiUXi/cuHh4eHoVKpoFarodfrYTAYYDAYYDQaqWZdKDg4GBEREQgPD0dkZCREIhGSk5MRGho642ty3B0jLRYLFAoFXr16BY1Gg79//xIZT3SNXC6EQiEyMzMhFovB4XC8B/Lz58+or6/H9+/fqea9qPj4eMhkMqxcudKzII1GI27duoWmpia7LiI2NhaxsbEQCATMa9GiRUTDhQYHB9HV1QWtVsu8dDodTCaTzfskEglkMhmCg4P/HeTAwACuXr0KrVZrA3D79u2QSqXTuglpaplMJsjlcjx//twGqEAgwKlTpxARETFzkMPDw7h06RK6u7uZMrFYjPz8fISHh1Pte0EDAwOoq6uDUqlkyqKjo1FaWupyMuQU5N+/f3HlyhV0dHQAAAICArB//35IJBKqbR+oqakJNTU1GB8fBwAkJSXh9OnT4HK57q0jHzx4wEDkcDgoLCwkiD6URCJBYWEhM3vt6OjAgwcP3NsQ6OzshFwuZ87z8vKQlpZGtetjpaWlYffu3cy5XC7H169fpwfSYrGgpqaGWR+KRCLk5ORQrfpJUqkUIpGIGe6qq6vhaDS0A6lQKBjqQUFBOHTokNuLU5LnxOFwcOjQIQQFBQEAvn79CoVCMTXIJ0+eMMc7duzAkiVLqDb9rCVLlmDHjh0OGTkE+ePHD6Y1BgYGIjs7m2qRJcrOzkZgYCDTKn/8+OEcZHt7O3OcmpqKsLAwqkGWKCwsDKmpqQ5Z2YHUaDTMcXJyMtUey2TNxJqVHUidTsccL1u2jGqOZbJmYs3KDuTg4KDNAEti36THESs7kBPrEw6HAx6PRzXHMvF4PGYpOHktyXX28JjETjljQzY7IOMrEoEkzQuQY2NjaGtrw+PHj/H792+i5G1zSG+psrKS2RhubGzExYsXERAQQLRmU4v88+cP3r9/z5z39/fj06dPRGq2gTQajXa2ssPDw0SKJjsEkkQgSQSSRCBpHYn5vQltNps9+oTCH2ten4IcGRlBa2srPnz4wFhQw8GuzmTJ5XI7ByJrJSQkYOvWrVi6dKlb3+f169d4+PAhenp6PPYbg4KCkJ6ejvz8fJ/6xfgU5J07d/Dy5Uu3P/fz50/8/PnT6d81Gg1UKhUuXLgw7WuazWbU1tZiZGTEo7/RbDajubmZ+eeak2OkSqXy2rV7enrQ19fnVu/gTc9qvV4/dyc71lZgnhafz3fLPCU8PBwpKSnwlmv55s2b5+4YmZeXBz6fP+UY+eXLF5uymJgYl258CQkJyMzMdPv7FBUVQaPR4Nu3bx77jaGhoUhLS/O536hPQYaEhCArKwtZWVkuu6Rz587ZlOXk5CAjI8Mr30koFEIoFNI6kkQgSQSSRCAJJIlAkuYfyJCQELtNZ3Lvm4UgFy5caBN4YvHixVi9ejWRmo2PsQoKCrB+/Xr09/dj06ZNTmPLkFgOMiAgAGKxmOjQZIdAkggkiUCSCCSJQBJIEoEkEUgSgSSQJNBe68zV2dmJe/fuQavVIiEhAXv27IFAICBas6lF9vb2oqysDJ8+fYLBYIBKpcLly5fdsiL/l3tPjoOKaTgBqVQqn3y/WdUiGxsb7byjRkZG0NzcbBOo3dO6e/cuE5A/PT0dR48endKryjq5DY/Hw9mzZ5GYmEgtErCPejihoaEhr93TbDbj6dOnzHlbWxuuXbvm1Bp+AmJZWRmToWhsbAwvXrygrhVT+Id4M11FUFCQXUIxpVKJyspKh9n4JiBOdsfzZ3op1oEUi8V2sdR37drFpEzwlvLz8/Hff//ZlL179w43btywicjoDOK6deuwd+9eGiOttW/fPmRkZECr1SIxMRExMTFevyefz0dJSQnKyspsuve3b98iICAAR44cgcFgcArx+PHjfo1xy2NzDsX4+Hif3tMZzNbWVoyPj6Ozs5OVEH0O0mw2Q6FQ4OPHjy4nEnDTviclJQUbNmzwSGW6apmTxRaIPgd59+5dPHv2zOPXVSqV+PXrF3bt2uXVlslWiD6f7FgHC2T7tfl8Pg4ePAhnOTiOHTvGqrjvPgW5du3aWXPtnp4eVFdXO13T3rhxw2PDw6x0PY+MjPToGMnlcpGSkuLRCBq9vb0oLy+HwWBw2QNcv34dx44dY4UBNc/XaYGkUimkUilbJ8vo6+tDWVkZ+vv7bcpFIhG0Wq3NmKlQKMDlclFQUOB3mKx9jGUwGNDR0eHTUNh6vR7l5eV2oVXWrFmD4uJilJSU2G0atLW14ebNm35PscHKdeTTp09x584djI+PIzAwEDKZbEZRO+Bmkury8nL09vbatcSioiLweDyns9nXr1+Dy+Xi8OHDfsu1yboWqVKpcPv2bWYMHR0dRXV1tdfDYdfW1uLXr182ZatWrcKJEyeYdH/WS5PJLbOlpQVv3ryhrhVW+5uO9OHDB6/ed3L2N6FQiOLiYiaTqqN15mSYruLlzTuQzp4gLFiwwKv33bhxow3EkydPOoToDCaXy/Vr4lTWjZHbtm1DS0sLRkdHbSBu2bLFq/eVyWRYvnw5QkJCkJycPK2xjs/no7S0FBqNBqtXr3YZnWvegYyJicGZM2dQXV0NnU6H+Ph4HDx40OtpEDkcjk2rnK6ioqIQFRVFxleOtGLFCpw/fx7j4+OUuGUumEMSRLJrJZAkAkkikCQCSSKQBJJEIEk+BOmvZ2okTGsrcUqQE2+yWCwOUxuR4Pck4hOWCJOB2oC0fr7mb38/EhzaEzliZQfS2seis7OTag7s8+R2xMoOpHUiE2/msSLhn3OLTU46w3Xmm9je3u5V51KSexoaGkJ7e7tTP1IbkHFxcYzr9OjoKBoaGqgGWaKGhgbGaiIxMRFxcXGulx87d+5kjp89e0aTHpZMcqydn6wZOQUpFouZVmk2m1FVVeV341vM89TBVVVVTICMxMREh2HCuY4WnPv372dM4NVqNR49ekQ16ifJ5XKo1WrGUu/AgQMONwUc7uwsW7bMxj/j3r17XnWJI8Gpo9D9+/eZc6lU6jT8i9O91tzcXCQlJTHNu6Kiwq8GuPNNTU1NqKioYIa1pKQk5ObmOn0/x+JiABweHsalS5fQ3d1tM4bm5+f71YZzLmtgYAB1dXVQKpVMWXR0NEpLSxEaGjozkJOjO8HKGnz79u2QSqV+jS0zl2QymSCXy/H8+XOYTCamXCAQ4NSpU4iIiHD5+SlBAoDRaMStW7fsutbg4GDExsYiNjYWAoGAeS1atIjIwHV0r66uLmi1Wual0+lsAAKARCKBTCabVmOZFsgJff78GfX19fj+/TvRgHdD08hkMrtoXB4DOTHxUSgUePXqFTQajcMQXyTMyIVeKBQiMzMTYrHY7WfCboOcPBlSqVRQq9XQ6/UwGAwwGAwwGo1EBq49ziIiIhAeHo7IyEiIRCIkJye7nMx4FSSJbHZIBJLkSP8Drr9Ks/cy/+IAAAAASUVORK5CYII=" alt="+-÷×">
+    </div>
     <div>
       <div class="calc-card-title">Four Function Calculator</div>
       <div class="calc-card-sub">Practice Version</div>
     </div>
   </div>
   <div class="calc-card selected" data-calc="scientific" onclick="selectCalc(this)">
-    <div class="calc-card-icon"><span style="font-size:11px">∛27</span></div>
+    <div class="calc-card-icon">
+      <img src="data:image/png;base64,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" alt="³√27">
+    </div>
     <div>
       <div class="calc-card-title">Scientific Calculator</div>
       <div class="calc-card-sub">Practice Version</div>
     </div>
   </div>
   <div class="calc-card" data-calc="graphing" onclick="selectCalc(this)">
-    <div class="calc-card-icon" style="font-size:18px">∿</div>
+    <div class="calc-card-icon">
+      <img src="data:image/png;base64,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" alt="Graph">
+    </div>
     <div>
       <div class="calc-card-title">Graphing Calculator</div>
       <div class="calc-card-sub">Practice Version</div>
@@ -384,53 +449,84 @@
     <div class="keypad-toggle" id="rad-btn" onclick="toggleAngle('RAD')">RAD</div>
     <div class="keypad-toggle active" id="deg-btn" onclick="toggleAngle('DEG')">DEG</div>
     <div class="keypad-spacer"></div>
-    <div class="keypad-action" onclick="calcUndo()" title="Undo">↩</div>
-    <div class="keypad-action" onclick="calcRedo()" title="Redo">↪</div>
+    <div class="keypad-action" id="undo-btn" onclick="calcUndo()" title="Undo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 9h10a5 5 0 0 1 0 10h-1"/>
+        <polyline points="8 5 4 9 8 13"/>
+      </svg>
+    </div>
+    <div class="keypad-action" id="redo-btn" onclick="calcRedo()" title="Redo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 9H10a5 5 0 0 0 0 10h1"/>
+        <polyline points="16 5 20 9 16 13"/>
+      </svg>
+    </div>
     <div class="keypad-text-btn" onclick="calcClearAll()">clear all</div>
-    <div class="keypad-wrench">🔧</div>
+    <div class="keypad-wrench">
+      <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+    </div>
   </div>
   <div class="keypad-grid" id="keypad-main">
     <!-- Row 1 -->
-    <div class="key" onclick="ki('²')">a<span class="super">2</span></div>
-    <div class="key" onclick="ki('^(')">a<span class="super">b</span></div>
-    <div class="key" onclick="ki('abs(')">|a|</div>
+    <div class="key math" onclick="ki('²')"><span class="var">a</span><span class="super">2</span></div>
+    <div class="key math" onclick="ki('^(')"><span class="var">a</span><span class="super"><span class="var">b</span></span></div>
+    <div class="key math" onclick="ki('abs(')">|<span class="var">a</span>|</div>
+    <div class="key-gap"></div>
     <div class="key num" onclick="ki('7')">7</div>
     <div class="key num" onclick="ki('8')">8</div>
     <div class="key num" onclick="ki('9')">9</div>
     <div class="key op" onclick="ki('÷')">÷</div>
-    <div class="key" onclick="ki('%')">%</div>
-    <div class="key" onclick="ki('/')"><span class="frac"><span>a</span><span class="frac-line"></span><span>b</span></span></div>
+    <div class="key-gap"></div>
+    <div class="key op" onclick="ki('%')">%</div>
+    <div class="key math" onclick="ki('/')"><span class="frac"><span class="var">a</span><span class="frac-line"></span><span class="var">b</span></span></div>
 
     <!-- Row 2 -->
-    <div class="key" onclick="ki('√(')">√</div>
-    <div class="key" onclick="ki('nrt(')"><span class="small"><sup>n</sup>√</span></div>
-    <div class="key" onclick="ki('π')">π</div>
+    <div class="key math" onclick="ki('√(')">√</div>
+    <div class="key math" onclick="ki('nrt(')"><span class="small"><sup><span class="var">n</span></sup>√</span></div>
+    <div class="key math" onclick="ki('π')"><span class="var">π</span></div>
+    <div class="key-gap"></div>
     <div class="key num" onclick="ki('4')">4</div>
     <div class="key num" onclick="ki('5')">5</div>
     <div class="key num" onclick="ki('6')">6</div>
     <div class="key op" onclick="ki('×')">×</div>
-    <div class="key dark" onclick="moveCursor(-1)">←</div>
-    <div class="key dark" onclick="moveCursor(1)">→</div>
+    <div class="key-gap"></div>
+    <div class="key dark" onclick="moveCursor(-1)"><svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="6" x2="15" y2="6"/><polyline points="6 1 1 6 6 11"/></svg></div>
+    <div class="key dark" onclick="moveCursor(1)"><svg width="16" height="12" viewBox="0 0 16 12" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="6" x2="15" y2="6"/><polyline points="10 1 15 6 10 11"/></svg></div>
 
     <!-- Row 3 -->
-    <div class="key" onclick="ki('sin(')">sin</div>
-    <div class="key" onclick="ki('cos(')">cos</div>
-    <div class="key" onclick="ki('tan(')">tan</div>
+    <div class="key math" onclick="ki('sin(')">sin</div>
+    <div class="key math" onclick="ki('cos(')">cos</div>
+    <div class="key math" onclick="ki('tan(')">tan</div>
+    <div class="key-gap"></div>
     <div class="key num" onclick="ki('1')">1</div>
     <div class="key num" onclick="ki('2')">2</div>
     <div class="key num" onclick="ki('3')">3</div>
     <div class="key op" onclick="ki('−')">−</div>
-    <div class="key span2" onclick="calcBackspace()">⌫</div>
+    <div class="key-gap"></div>
+    <div class="key dark span2" onclick="calcBackspace()">
+      <svg width="20" height="16" viewBox="0 0 20 16" fill="none" stroke="#333" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 1l-6 7 6 7h12V1H7z"/>
+        <line x1="10" y1="5" x2="15" y2="11"/>
+        <line x1="15" y1="5" x2="10" y2="11"/>
+      </svg>
+    </div>
 
     <!-- Row 4 -->
-    <div class="key" onclick="ki('(')">(</div>
-    <div class="key" onclick="ki(')')">)</div>
-    <div class="key" onclick="ki(',')">,</div>
+    <div class="key op" onclick="ki('(')">(</div>
+    <div class="key op" onclick="ki(')')">)</div>
+    <div class="key op" onclick="ki(',')">,</div>
+    <div class="key-gap"></div>
     <div class="key num" onclick="ki('0')">0</div>
     <div class="key num" onclick="ki('.')">.</div>
-    <div class="key" onclick="ki('ans')">ans</div>
+    <div class="key op" onclick="ki('ans')">ans</div>
     <div class="key op" onclick="ki('+')">+</div>
-    <div class="key enter" onclick="calcEval()">↵</div>
+    <div class="key-gap"></div>
+    <div class="key enter" onclick="calcEval()">
+      <svg width="22" height="16" viewBox="0 0 22 16" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 1v9H3"/>
+        <polyline points="7 6 3 10 7 14"/>
+      </svg>
+    </div>
   </div>
 </div>
 
@@ -470,6 +566,7 @@
   // ── STATE ──
   let selectedCalc = 'scientific';
   let testActive = false;
+  let isTestMode = false;
   let startTime = null;
   let timerInterval = null;
   let angleMode = 'DEG';
@@ -492,6 +589,32 @@
     selectedCalc = el.dataset.calc;
   }
 
+  // ── MODE STYLING ──
+  function applyMode(test) {
+    isTestMode = test;
+    if (test) {
+      document.body.classList.add('test-mode');
+    } else {
+      document.body.classList.remove('test-mode');
+    }
+    // Update undo/redo button colors
+    const undoBtn = document.getElementById('undo-btn');
+    const redoBtn = document.getElementById('redo-btn');
+    if (test) {
+      undoBtn.style.background = '#2f72dc';
+      undoBtn.style.borderRadius = '5px';
+      undoBtn.style.color = '#fff';
+      redoBtn.style.background = '#2f72dc';
+      redoBtn.style.borderRadius = '5px';
+      redoBtn.style.color = '#fff';
+    } else {
+      undoBtn.style.background = 'transparent';
+      undoBtn.style.color = '#bbb';
+      redoBtn.style.background = 'transparent';
+      redoBtn.style.color = '#bbb';
+    }
+  }
+
   // ── TEST START FLOW ──
   function startTest() {
     document.getElementById('confirm-modal').classList.add('visible');
@@ -504,7 +627,6 @@
   }
   function confirmTest() {
     document.getElementById('confirm-modal').classList.remove('visible');
-    // Show "Attempting to enter Single-App Mode.." banner
     const banner = document.getElementById('top-banner');
     banner.classList.add('visible');
     setTimeout(() => {
@@ -515,6 +637,7 @@
 
   function launchCalc(isTest) {
     testActive = isTest;
+    applyMode(isTest);
     startTime = new Date();
     expression = '';
     cursorPos = 0;
@@ -522,7 +645,6 @@
     updateDisplay();
     document.getElementById('calc-history').innerHTML = '';
 
-    // Set title based on selected calculator
     const names = { four: 'Four Function', scientific: 'Scientific', graphing: 'Graphing' };
     const label = isTest ? 'Test Mode' : 'Practice Ver…';
     document.getElementById('calc-title').textContent = `${names[selectedCalc]} Calculator | ${label}`;
@@ -588,6 +710,7 @@
   function endSession() {
     testActive = false;
     if (timerInterval) clearInterval(timerInterval);
+    document.body.classList.remove('test-mode');
     showScreen('home');
   }
 
@@ -610,6 +733,7 @@
       document.getElementById('password-modal').classList.remove('visible');
       testActive = false;
       if (timerInterval) clearInterval(timerInterval);
+      document.body.classList.remove('test-mode');
       showScreen('home');
     } else {
       document.getElementById('password-error').textContent = 'Incorrect password';
@@ -621,11 +745,8 @@
     if (e.key === 'Enter') checkPassword();
   });
 
-
-
   // ── CALCULATOR ENGINE ──
   function ki(ch) {
-    // Save undo state
     undoStack.push({ expr: expression, pos: cursorPos });
     redoStack = [];
 
@@ -697,33 +818,23 @@
     if (!expression.trim()) return;
     try {
       let expr = expression;
-      // Replace display chars with JS math
       expr = expr.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-');
       expr = expr.replace(/π/g, `(${Math.PI})`);
       expr = expr.replace(/ans/g, `(${lastAns})`);
-      // Handle ^
       expr = expr.replace(/\^/g, '**');
-      // Handle √(
       expr = expr.replace(/√\(/g, 'Math.sqrt(');
-      // Handle abs(
       expr = expr.replace(/abs\(/g, 'Math.abs(');
-      // Handle sin, cos, tan
       const toRad = angleMode === 'DEG' ? `*${Math.PI}/180` : '';
       expr = expr.replace(/sin\(/g, `Math.sin((`);
       expr = expr.replace(/cos\(/g, `Math.cos((`);
       expr = expr.replace(/tan\(/g, `Math.tan((`);
       if (toRad) {
-        // Close the inner parens with radian conversion
-        // This is a simple approach - wrap trig arg
         expr = expr.replace(/Math\.(sin|cos|tan)\(\(/g, (m, fn) => `Math.${fn}((`);
-        // We need to handle the closing - simple approach for single-level
         expr = expr.replace(/Math\.(sin|cos|tan)\(\(([^)]*)\)\)/g, (m, fn, arg) => {
           return `Math.${fn}((${arg})${toRad})`;
         });
       }
-      // Handle nrt( as a,b) → Math.pow(b, 1/a)
       expr = expr.replace(/nrt\(([^,]+),([^)]+)\)/g, 'Math.pow($2, 1/($1))');
-      // Handle %
       expr = expr.replace(/(\d+(\.\d+)?)%/g, '($1/100)');
 
       const result = Function('"use strict"; return (' + expr + ')')();
@@ -731,7 +842,6 @@
 
       lastAns = Number.isFinite(result) ? result : 0;
 
-      // Add to history
       const histEl = document.getElementById('calc-history');
       const item = document.createElement('div');
       item.className = 'calc-history-item';
@@ -743,7 +853,6 @@
       cursorPos = 0;
       updateDisplay();
     } catch (e) {
-      // Show error in history
       const histEl = document.getElementById('calc-history');
       const item = document.createElement('div');
       item.className = 'calc-history-item';
@@ -768,7 +877,6 @@
     tab.addEventListener('click', () => {
       document.querySelectorAll('.keypad-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-      // For now all tabs show main keypad
     });
   });
 
@@ -784,7 +892,6 @@
   // ── PREVENT PULL-TO-REFRESH ──
   document.body.addEventListener('touchmove', e => {
     if (e.target.closest('.calc-history')) return;
-    // Allow scrolling in history
   }, { passive: true });
 
   // Init display
@@ -792,3 +899,5 @@
 </script>
 </body>
 </html>
+
+</body></html>
