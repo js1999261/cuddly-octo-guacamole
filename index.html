@@ -48,66 +48,69 @@
     touch-action: manipulation;
     -webkit-user-select: none; user-select: none;
   }
+  button, input, select, textarea { font-family: inherit; }
 
   /* ── SCREENS ── */
   .screen { display: none; flex-direction: column; height: 100%; width: 100%; position: absolute; top: 0; left: 0; }
   .screen.active { display: flex; }
 
   /* ── HOME SCREEN ── */
-  #home { padding: calc(var(--safe-top) + 24px) 20px calc(var(--safe-bottom) + 16px); overflow: visible; }
-  .home-header { text-align: center; margin-bottom: 4px; }
-  .logo-text { margin-bottom: 2px; }
-  .logo-text { margin-bottom: 2px; overflow: visible; }
-  .logo-text img { height: 28px; width: auto; display: block; margin: 0 auto; }
-  .choose-assessment { color: var(--blue); font-size: 15px; text-decoration: underline; cursor: pointer; }
+  #home { padding: calc(var(--safe-top) + 30px) 20px calc(var(--safe-bottom) + 16px); overflow: visible; }
+  .home-header { text-align: center; margin-bottom: 0; }
+  .logo-text { margin-bottom: 10px; overflow: visible; }
+  .logo-text img { height: 26px; width: auto; display: block; margin: 0 auto; }
+  .choose-assessment { color: var(--blue); font-size: 17px; text-decoration: underline; cursor: pointer; font-weight: 400; }
   .help-icon {
     position: absolute; top: calc(var(--safe-top) + 20px); right: 20px;
     width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #999;
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px; color: #999; cursor: pointer;
+    font-size: 16px; color: #999; cursor: pointer; font-weight: 300;
   }
 
-  .calc-section-label { font-size: 14px; color: var(--dark-text); margin: 20px 0 10px; }
+  .calc-section-label { font-size: 14px; color: #343434; margin: 28px 0 13px; font-weight: 400; }
 
   /* Card styling matching iOS */
   .calc-card {
-    display: flex; align-items: center; padding: 14px 12px;
-    border: 1px solid #e0e0e0; border-radius: 8px;
+    display: flex; align-items: center; padding: 15px 14px;
+    border: 1px solid #e0e0e0; border-radius: 10px;
     margin-bottom: 10px; cursor: pointer; transition: all 0.15s;
     background: var(--white);
   }
   .calc-card.selected {
     border: 2px solid var(--blue);
+    padding: 14px 13px;
     background: #f4f8fd;
   }
   .calc-card.selected .calc-card-title,
   .calc-card.selected .calc-card-sub { color: #2d5ca6; }
 
   .calc-card-icon {
-    width: 48px; height: 48px; border: none; border-radius: 0;
+    width: 46px; height: 46px; border: none; border-radius: 0;
     display: flex; align-items: center; justify-content: center;
-    margin-right: 12px; flex-shrink: 0;
+    margin-right: 14px; flex-shrink: 0;
     background: transparent; overflow: visible;
   }
-  .calc-card-icon svg { width: 30px; height: 30px; }
+  .calc-card-icon svg { width: 28px; height: 28px; }
   .calc-card-icon img { width: 100%; height: 100%; object-fit: contain; }
 
-  .calc-card-title { font-size: 16px; color: var(--dark-text); }
-  .calc-card-sub { font-size: 13px; color: #8e8e8e; margin-top: 1px; }
+  .calc-card-title { font-size: 16px; color: #333; font-weight: 400; }
+  .calc-card-sub { font-size: 13px; color: #929292; margin-top: 2px; font-weight: 400; }
 
   .home-bottom { margin-top: auto; }
   .btn-start-test {
-    width: 100%; padding: 14px; font-size: 17px; border-radius: 8px;
+    width: 100%; padding: 15px; font-size: 17px; border-radius: 10px;
     border: 2px solid var(--blue); background: var(--white);
     color: var(--blue); cursor: pointer; margin-bottom: 10px;
+    font-weight: 500; font-family: inherit;
   }
   .btn-start-practice {
-    width: 100%; padding: 14px; font-size: 17px; border-radius: 8px;
+    width: 100%; padding: 15px; font-size: 17px; border-radius: 10px;
     border: 2px solid var(--blue); background: var(--blue); color: var(--white); cursor: pointer;
+    font-weight: 600; font-family: inherit;
   }
-  .home-footer { display: flex; justify-content: center; gap: 16px; margin-top: 14px; }
-  .home-footer a { font-size: 13px; color: var(--gray-text); text-decoration: underline; cursor: pointer; }
-  .home-footer span { color: #d9d9d9; }
+  .home-footer { display: flex; justify-content: center; gap: 16px; margin-top: 18px; }
+  .home-footer a { font-size: 13px; color: #666; text-decoration: underline; cursor: pointer; }
+  .home-footer span { color: #c0c0c0; }
 
   /* ── CONFIRM MODAL ── */
   .modal-overlay {
@@ -139,7 +142,7 @@
   .top-banner.visible { display: block; }
 
   /* ── CALCULATOR SCREEN ── */
-  #calculator { background: var(--white); }
+  #calculator { background: var(--keypad-bg); }
   .calc-topbar {
     background: var(--header-bg); color: var(--white);
     padding: calc(var(--safe-top) + 6px) 10px 6px;
@@ -191,7 +194,7 @@
   /* Display area */
   .calc-display {
     flex: 1; display: flex; flex-direction: column;
-    overflow: hidden;
+    overflow: hidden; background: var(--white);
   }
   .calc-history {
     flex: 1; padding: 0; font-size: 16px; color: var(--dark-text);
@@ -286,26 +289,28 @@
     font-size: 24px; color: #ccc; cursor: pointer; background: none; border: none;
   }
   .done-content { text-align: center; width: 100%; max-width: 340px; }
-  .done-label { font-size: 18px; color: var(--gray-text); font-weight: 300; margin-bottom: 8px; }
-  .done-time { font-size: 48px; font-weight: 300; color: var(--dark-text); margin-bottom: 4px; }
-  .done-start { font-size: 14px; color: var(--gray-text); margin-bottom: 14px; }
+  .done-label { font-size: 18px; color: #666; font-weight: 300; margin-bottom: 15px; }
+  .done-time { font-size: 48px; font-weight: 200; color: var(--dark-text); margin-bottom: 13px; }
+  .done-start { font-size: 14px; color: #666; margin-bottom: 17px; }
   .done-lock-badge {
     display: flex; align-items: center; justify-content: center; gap: 6px;
     background: #555; color: var(--white); border-radius: 16px;
-    padding: 6px 16px; font-size: 14px; margin: 0 auto 40px; width: fit-content;
+    padding: 6px 16px; font-size: 14px; margin: 0 auto 44px; width: fit-content;
   }
   .done-lock-badge svg { width: 14px; height: 14px; fill: var(--white); }
-  .done-instructions { font-size: 14px; color: var(--gray-text); line-height: 1.5; margin-bottom: 6px; }
-  .done-instructions strong { font-weight: 600; }
-  .done-selflock-note { font-size: 14px; color: var(--gray-text); margin-bottom: 28px; }
+  .done-instructions { font-size: 15px; color: #666; line-height: 1.5; margin-bottom: 8px; }
+  .done-instructions strong { font-weight: 600; color: #333; }
+  .done-selflock-note { font-size: 15px; color: #666; margin-bottom: 28px; }
   .btn-im-done {
-    width: 100%; padding: 14px; font-size: 17px; border-radius: 8px;
-    border: 1.5px solid var(--blue); background: var(--white);
+    width: 100%; padding: 15px; font-size: 17px; border-radius: 10px;
+    border: 2px solid var(--blue); background: var(--white);
     color: var(--blue); cursor: pointer; margin-bottom: 10px;
+    font-weight: 500;
   }
   .btn-continue {
-    width: 100%; padding: 14px; font-size: 17px; border-radius: 8px;
+    width: 100%; padding: 15px; font-size: 17px; border-radius: 10px;
     border: none; background: var(--blue); color: var(--white); cursor: pointer;
+    font-weight: 600;
   }
 
   /* ── PASSWORD MODAL ── */
