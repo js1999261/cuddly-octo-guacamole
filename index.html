@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,37 +56,38 @@
   .screen.active { display: flex; }
 
   /* ── HOME SCREEN ── */
-  #home { padding: calc(var(--safe-top) + 30px) 20px calc(var(--safe-bottom) + 16px); overflow: visible; }
+  #home { padding: calc(var(--safe-top) + 20px) 10px calc(var(--safe-bottom) + 16px); overflow: visible; }
   .home-header { text-align: center; margin-bottom: 0; }
-  .logo-text { margin-bottom: 10px; overflow: visible; }
+  .logo-text { margin-bottom: 20px; overflow: visible; }
   .logo-text img { height: 26px; width: auto; display: block; margin: 0 auto; }
   .choose-assessment { color: var(--blue); font-size: 17px; text-decoration: underline; cursor: pointer; font-weight: 400; }
   .help-icon {
     position: absolute; top: calc(var(--safe-top) + 20px); right: 20px;
-    width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #999;
+    width: 28px; height: 28px; border-radius: 50%; border: none;
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px; color: #999; cursor: pointer; font-weight: 300;
+    font-size: 15px; color: #fff; cursor: pointer; font-weight: 600;
+    background: #6d6d72;
   }
 
-  .calc-section-label { font-size: 14px; color: #343434; margin: 28px 0 13px; font-weight: 400; }
+  .calc-section-label { font-size: 14px; color: #343434; margin: 21px 0 2px; font-weight: 400; }
 
   /* Card styling matching iOS */
   .calc-card {
-    display: flex; align-items: center; padding: 15px 14px;
-    border: 1px solid #e0e0e0; border-radius: 10px;
-    margin-bottom: 10px; cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; padding: 9px 14px;
+    border: 1px solid #cccccc; border-radius: 10px;
+    margin-bottom: 9px; cursor: pointer; transition: all 0.15s;
     background: var(--white);
   }
   .calc-card.selected {
     border: 2px solid var(--blue);
-    padding: 14px 13px;
+    padding: 8px 13px;
     background: #f4f8fd;
   }
   .calc-card.selected .calc-card-title,
   .calc-card.selected .calc-card-sub { color: #2d5ca6; }
 
   .calc-card-icon {
-    width: 46px; height: 46px; border: none; border-radius: 0;
+    width: 36px; height: 36px; border: none; border-radius: 0;
     display: flex; align-items: center; justify-content: center;
     margin-right: 14px; flex-shrink: 0;
     background: transparent; overflow: visible;
@@ -98,14 +100,14 @@
 
   .home-bottom { margin-top: auto; }
   .btn-start-test {
-    width: 100%; padding: 15px; font-size: 17px; border-radius: 10px;
-    border: 2px solid var(--blue); background: var(--white);
-    color: var(--blue); cursor: pointer; margin-bottom: 10px;
+    width: 100%; padding: 16px; font-size: 17px; border-radius: 10px;
+    border: 1px solid var(--blue); background: var(--white);
+    color: var(--blue); cursor: pointer; margin-bottom: 6px;
     font-weight: 500; font-family: inherit;
   }
   .btn-start-practice {
-    width: 100%; padding: 15px; font-size: 17px; border-radius: 10px;
-    border: 2px solid var(--blue); background: var(--blue); color: var(--white); cursor: pointer;
+    width: 100%; padding: 16px; font-size: 17px; border-radius: 10px;
+    border: 1px solid var(--blue); background: var(--blue); color: var(--white); cursor: pointer;
     font-weight: 600; font-family: inherit;
   }
   .home-footer { display: flex; justify-content: center; gap: 16px; margin-top: 18px; }
@@ -114,23 +116,24 @@
 
   /* ── CONFIRM MODAL ── */
   .modal-overlay {
-    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
     z-index: 100; align-items: center; justify-content: center; padding: 32px;
   }
   .modal-overlay.visible { display: flex; }
   .modal-box {
-    background: #2C2C2E; border-radius: 14px; padding: 24px 20px 0;
+    background: rgba(44, 44, 46, 0.78); backdrop-filter: saturate(180%) blur(40px); -webkit-backdrop-filter: saturate(180%) blur(40px);
+    border-radius: 14px; padding: 24px 20px 0;
     max-width: 300px; width: 100%; text-align: center; color: var(--white);
   }
   .modal-box h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
-  .modal-box p { font-size: 13px; line-height: 1.45; color: #ddd; margin-bottom: 20px; }
-  .modal-buttons { display: flex; border-top: 0.5px solid #555; }
+  .modal-box p { font-size: 13px; line-height: 1.45; color: rgba(255,255,255,0.85); margin-bottom: 20px; }
+  .modal-buttons { display: flex; border-top: 0.5px solid rgba(255,255,255,0.3); }
   .modal-btn {
     flex: 1; padding: 14px 0; font-size: 17px; border: none;
-    background: none; cursor: pointer; color: #5AC8FA;
+    background: none; cursor: pointer; color: #007AFF;
   }
-  .modal-btn:first-child { border-right: 0.5px solid #555; font-weight: 400; }
-  .modal-btn:last-child { font-weight: 500; }
+  .modal-btn:first-child { border-right: 0.5px solid rgba(255,255,255,0.3); font-weight: 400; color: #007AFF; }
+  .modal-btn:last-child { font-weight: 500; color: #007AFF; }
 
   /* ── TOP BANNER (attempting to enter) ── */
   .top-banner {
@@ -179,10 +182,10 @@
   .help-dropdown .timer-start { font-size: 12px; color: var(--gray-text); text-align: center; margin-bottom: 10px; }
   .lock-badge {
     display: flex; align-items: center; justify-content: center; gap: 6px;
-    background: #555; color: var(--white); border-radius: 16px;
+    background: #666; color: var(--white); border-radius: 16px;
     padding: 5px 14px; font-size: 13px; margin: 0 auto 14px; width: fit-content;
   }
-  .lock-badge svg { width: 14px; height: 14px; fill: var(--white); }
+  .lock-badge svg, .lock-badge img { height: 14px; width: auto; fill: var(--white); }
   .help-menu-item {
     display: flex; align-items: center; gap: 8px; padding: 8px 0;
     font-size: 14px; color: var(--dark-text); cursor: pointer;
@@ -281,34 +284,35 @@
 
   /* ── DONE SCREEN ── */
   #done-screen {
-    padding: calc(var(--safe-top) + 16px) 24px calc(var(--safe-bottom) + 24px);
-    align-items: center; justify-content: center; background: var(--white);
+    padding: calc(var(--safe-top) + 16px) 10px calc(var(--safe-bottom) + 24px);
+    align-items: center; background: var(--white);
   }
   .done-close {
     position: absolute; top: calc(var(--safe-top) + 16px); right: 20px;
-    font-size: 24px; color: #ccc; cursor: pointer; background: none; border: none;
+    font-size: 24px; color: #aaa; cursor: pointer; background: none; border: none;
   }
-  .done-content { text-align: center; width: 100%; max-width: 340px; }
-  .done-label { font-size: 18px; color: #666; font-weight: 300; margin-bottom: 15px; }
-  .done-time { font-size: 48px; font-weight: 200; color: var(--dark-text); margin-bottom: 13px; }
-  .done-start { font-size: 14px; color: #666; margin-bottom: 17px; }
+  .done-content { text-align: center; width: 100%; max-width: 350px; flex: 1; display: flex; flex-direction: column; padding-top: 120px; }
+  .done-label { font-size: 22px; color: #666; font-weight: 300; margin-bottom: 8px; line-height: 1.4; }
+  .done-time { font-size: 60px; font-weight: 200; color: var(--dark-text); margin-bottom: 8px; }
+  .done-start { font-size: 15px; color: #666; margin-bottom: 15px; }
   .done-lock-badge {
     display: flex; align-items: center; justify-content: center; gap: 6px;
-    background: #555; color: var(--white); border-radius: 16px;
-    padding: 6px 16px; font-size: 14px; margin: 0 auto 44px; width: fit-content;
+    background: #666; color: var(--white); border-radius: 16px;
+    padding: 6px 16px; font-size: 14px; margin: 0 auto; width: fit-content;
   }
-  .done-lock-badge svg { width: 14px; height: 14px; fill: var(--white); }
+  .done-lock-badge svg, .done-lock-badge img { height: 14px; width: auto; fill: var(--white); }
+  .done-spacer { flex: 1; min-height: 40px; }
   .done-instructions { font-size: 15px; color: #666; line-height: 1.5; margin-bottom: 8px; }
   .done-instructions strong { font-weight: 600; color: #333; }
   .done-selflock-note { font-size: 15px; color: #666; margin-bottom: 28px; }
   .btn-im-done {
-    width: 100%; padding: 15px; font-size: 17px; border-radius: 10px;
-    border: 2px solid var(--blue); background: var(--white);
-    color: var(--blue); cursor: pointer; margin-bottom: 10px;
+    width: 100%; padding: 16px; font-size: 17px; border-radius: 8px;
+    border: 1px solid var(--blue); background: var(--white);
+    color: var(--blue); cursor: pointer; margin-bottom: 6px;
     font-weight: 500;
   }
   .btn-continue {
-    width: 100%; padding: 15px; font-size: 17px; border-radius: 10px;
+    width: 100%; padding: 15px; font-size: 17px; border-radius: 8px;
     border: none; background: var(--blue); color: var(--white); cursor: pointer;
     font-weight: 600;
   }
@@ -346,8 +350,6 @@
     --help-btn-bg: transparent;
     --help-btn-border: rgba(255,255,255,0.7);
     --help-btn-color: rgba(255,255,255,0.9);
-    --undo-bg: var(--blue);
-    --undo-color: #fff;
   }
 </style>
 </head>
@@ -412,7 +414,7 @@
 </div>
 
 <!-- ══════ TOP BANNER ══════ -->
-<div id="top-banner" class="top-banner">Attempting to enter Single-App Mode..</div>
+<div id="top-banner" class="top-banner">Attempting to enter Single-App Mode...</div>
 
 <!-- ══════ CALCULATOR SCREEN ══════ -->
 <div id="calculator" class="screen">
@@ -428,7 +430,7 @@
     <div class="timer-value" id="dropdown-timer">0 minutes</div>
     <div class="timer-start" id="dropdown-start">Start time: --</div>
     <div class="lock-badge">
-      <svg viewBox="0 0 24 24"><path d="M12 1C8.7 1 6 3.7 6 7v2H4v14h16V9h-2V7c0-3.3-2.7-6-6-6zm-4 8V7c0-2.2 1.8-4 4-4s4 1.8 4 4v2H8zm4 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      <img src="data:image/png;base64,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" style="height:16px;width:auto">
       App Self-Lock
     </div>
     <div class="help-menu-item" onclick="toggleHelp()">
@@ -545,9 +547,10 @@
     <div class="done-time" id="done-timer">0 minutes</div>
     <div class="done-start" id="done-start">Start time: --</div>
     <div class="done-lock-badge">
-      <svg viewBox="0 0 24 24"><path d="M12 1C8.7 1 6 3.7 6 7v2H4v14h16V9h-2V7c0-3.3-2.7-6-6-6zm-4 8V7c0-2.2 1.8-4 4-4s4 1.8 4 4v2H8zm4 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      <img src="data:image/png;base64,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" style="height:16px;width:auto">
       App Self-Lock
     </div>
+    <div class="done-spacer"></div>
     <div class="done-instructions">If you're done, show this screen to your teacher.<br>Press <strong>"Continue Session"</strong> to return to the calculator.</div>
     <div class="done-selflock-note">App Self-Lock will end when you are done.</div>
     <button class="btn-im-done" onclick="endSession()">I'm Done</button>
@@ -608,40 +611,24 @@
     } else {
       document.body.classList.remove('test-mode');
     }
-    // Update undo/redo button colors
-    const undoBtn = document.getElementById('undo-btn');
-    const redoBtn = document.getElementById('redo-btn');
-    if (test) {
-      undoBtn.style.background = '#2f72dc';
-      undoBtn.style.borderRadius = '5px';
-      undoBtn.style.color = '#fff';
-      redoBtn.style.background = '#2f72dc';
-      redoBtn.style.borderRadius = '5px';
-      redoBtn.style.color = '#fff';
-    } else {
-      undoBtn.style.background = 'transparent';
-      undoBtn.style.color = '#bbb';
-      redoBtn.style.background = 'transparent';
-      redoBtn.style.color = '#bbb';
-    }
   }
 
   // ── TEST START FLOW ──
   function startTest() {
     document.getElementById('confirm-modal').classList.add('visible');
+    document.getElementById('top-banner').classList.add('visible');
   }
   function startPractice() {
     launchCalc(false);
   }
   function cancelTest() {
     document.getElementById('confirm-modal').classList.remove('visible');
+    document.getElementById('top-banner').classList.remove('visible');
   }
   function confirmTest() {
     document.getElementById('confirm-modal').classList.remove('visible');
-    const banner = document.getElementById('top-banner');
-    banner.classList.add('visible');
     setTimeout(() => {
-      banner.classList.remove('visible');
+      document.getElementById('top-banner').classList.remove('visible');
       launchCalc(true);
     }, 1500);
   }
@@ -910,3 +897,5 @@
 </script>
 </body>
 </html>
+
+</body></html>
