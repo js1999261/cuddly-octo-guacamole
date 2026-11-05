@@ -519,7 +519,9 @@
   function launchCalc(isTest) {
     testActive = isTest;
     applyMode(isTest);
+    // Fixed start time: 6:13:30 PM today
     startTime = new Date();
+    startTime.setHours(18, 13, 30, 0);
     expression = '';
     cursorPos = 0;
     history = [];
